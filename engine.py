@@ -11,18 +11,17 @@ class Window:
         self.__root = Tk()
         self.__root.title(title)
         self.__root.resizable(False, False)
-        self.__canvas = Canvas(self.__root, width = width, height = height)
+        self.__canvas = Canvas(self.__root, width = width, height = height, highlightthickness = 0)
         self.__canvas.pack()
 
     def update(self):
         self.__root.update()
 
 class InputManager:
-    """Manages user input."""
+    """Keeps track of user input."""
     def __init__(self, window):
-        window.__canvas.bind_all("<KeyPress>", self.__cbKeyPressEvent)
-        window.__canvas.bind_all("<KeyRelease>", self.__cbKeyReleaseEvent)
-        window.__canvas.pack()
+        window._Window__canvas.bind_all("<KeyPress>", self.__cbKeyPressEvent)
+        window._Window__canvas.bind_all("<KeyRelease>", self.__cbKeyReleaseEvent)
         self.__newlyActiveKeys = []
         self.__activeKeys = []
 
@@ -71,12 +70,12 @@ class Entity:
         self.x = x
         self.y = y
         self.__window = window
-        self.__id = window.__canvas.create_image(self.x + 10, window.height - self.y - 6, image = sprite.photoImage)
+        self.id = window._Window__canvas.create_image(self.x, window.height - self.y, image = sprite.photoImage, anchor = "center")
 
     def translate(self, dx, dy):
         self.x = self.x + dx
         self.y = self.y + dy
-        self.__window.__canvas.move(self.__id, dx, -dy)
+        self.__window._Window__canvas.move(self.id, dx, -dy)
 
     def destroy(self):
-        self.__window.__canvas.delete(self.__id)
+        self.__window._Window__canvas.delete(self.id)

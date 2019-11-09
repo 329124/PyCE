@@ -6,8 +6,8 @@ import time
 
 window = Window(1280, 720, "tkinter game engine")
 testSprite = Sprite("test.png", 1)
-entityTopRight   = Entity(testSprite, window, 1280 - testSprite.width, 720 - testSprite.height)
-entityBottomLeft = Entity(testSprite, window)
+entityTopRight   = Entity(testSprite, window, window.width - testSprite.width / 2, window.height - testSprite.height / 2)
+entityBottomLeft = Entity(testSprite, window, testSprite.width / 2, testSprite.height / 2)
 inputManager = InputManager(window)
 while True:
     if inputManager.getKeyDown('e'):
