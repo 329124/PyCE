@@ -17,15 +17,6 @@ class Window:
     def update(self):
         self.__root.update()
 
-class MouseData:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.leftActive = False
-        self.leftNewlyActive = False
-        self.rightActive = False
-        self.rightNewlyActive = False
-
 class InputManager:
     """Keeps track of user input."""
     def __init__(self, window):
@@ -39,7 +30,16 @@ class InputManager:
         window._Window__canvas.bind("<ButtonRelease-3>", self.__cbRightButtonReleaseEvent)
         self.__newlyActiveKeys = []
         self.__activeKeys = []
-        self.__mouseData = MouseData()
+        self.__mouseData = self.MouseData()
+
+    class MouseData:
+        def __init__(self):
+            self.x = 0
+            self.y = 0
+            self.leftActive = False
+            self.leftNewlyActive = False
+            self.rightActive = False
+            self.rightNewlyActive = False
 
     def __cbKeyPressEvent(self, event):
         if event.char not in self.__newlyActiveKeys and event.char not in self.__activeKeys:
