@@ -17,13 +17,29 @@ class Window:
     def update(self):
         self.__root.update()
 
+class MouseData:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.leftActive = False
+        self.leftNewlyActive = False
+        self.rightActive = False
+        self.rightNewlyActive = False
+
 class InputManager:
     """Keeps track of user input."""
     def __init__(self, window):
+        self.window = window
         window._Window__canvas.bind_all("<KeyPress>", self.__cbKeyPressEvent)
         window._Window__canvas.bind_all("<KeyRelease>", self.__cbKeyReleaseEvent)
+        window._Window__canvas.bind("<Motion>", self.__cbMotionEvent)
+        window._Window__canvas.bind("<Button-1>", self.__cbLeftButtonPressEvent)
+        window._Window__canvas.bind("<ButtonRelease-1>", self.__cbLeftButtonReleaseEvent)
+        window._Window__canvas.bind("<Button-3>", self.__cbRightButtonPressEvent)
+        window._Window__canvas.bind("<ButtonRelease-3>", self.__cbRightButtonReleaseEvent)
         self.__newlyActiveKeys = []
         self.__activeKeys = []
+        self.__mouseData = MouseData()
 
     def __cbKeyPressEvent(self, event):
         if event.char not in self.__newlyActiveKeys and event.char not in self.__activeKeys:
@@ -35,8 +51,58 @@ class InputManager:
         if event.char in self.__activeKeys:
             self.__activeKeys.remove(event.char)
 
+    def __cbMotionEvent(self, event):
+        self.__mouseData.x = event.x
+        self.__mouseData.y = self.window.height - event.y - 1
+
+    def __cbLeftButtonPressEvent(self, event):
+        if not self.__mouseData.leftActive:
+            self.__mouseData.leftNewlyActive = True
+        self.__mouseData.leftActive = True
+
+    def __cbLeftButtonReleaseEvent(self, event):
+        self.__mouseData.leftActive = False
+        self.__mouseData.leftNewlyActive = False
+    
+    def __cbRightButtonPressEvent(self, event):
+        if not self.__mouseData.rightActive:
+            self.__mouseData.rightNewlyActive = True
+        self.__mouseData.rightActive = True
+    
+    def __cbRightButtonReleaseEvent(self, event):
+        self.__mouseData.rightActive = False
+        self.__mouseData.rightNewlyActive = False
+
+    def getMousePosition(self):
+        """Returns tuple of the mouse's x and y position."""
+        return (self.__mouseData.x, self.__mouseData.y)
+
+    def getMouseLeftDown(self):
+        """Will only return true once per left mouse button press."""
+        if self.__mouseData.leftNewlyActive:
+            self.__mouseData.leftNewlyActive = False
+            return True
+        else:
+            return False
+
+    def getMouseLeft(self):
+        """Will always return true if left mouse button is held down."""
+        return self.__mouseData.leftActive
+
+    def getMouseRightDown(self):
+        """Will only return true once per right mouse button press."""
+        if self.__mouseData.rightNewlyActive:
+            self.__mouseData.rightNewlyActive = False
+            return True
+        else:
+            return False
+    
+    def getMouseRight(self):
+        """Will always return true if right mouse button is held down."""
+        return self.__mouseData.rightActive
+
     def getKeyDown(self, key):
-        """Will return true only once per key press."""
+        """Will only return true once per key press."""
         if key in self.__newlyActiveKeys:
             self.__newlyActiveKeys.remove(key)
             self.__activeKeys.append(key)
