@@ -4,7 +4,6 @@ from PIL import Image
 from PIL import ImageTk
 
 class Window:
-    """Window"""
     def __init__(self, width, height, title):
         self.width = width
         self.height = height
@@ -24,7 +23,6 @@ class Window:
         self.root.update()
 
 class InputManager:
-    """Input Manager"""
     def __init__(self, window):
         self.window = window
         window.canvas.bind_all("<KeyPress>", self.cbKeyPressEvent)
@@ -128,7 +126,6 @@ class InputManager:
             return False
 
 class Sprite:
-    """Sprite"""
     def __init__(self, path, scale):
         baseImage = Image.open(path)
         resizedImage = baseImage.resize((baseImage.width * scale, baseImage.height * scale), Image.NEAREST)
